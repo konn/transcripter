@@ -60,6 +60,24 @@ export default class QTController implements Disposable {
     );
   }
 
+  public async currentTime(): Promise<number> {
+    return run((windowId: number) => {
+      const app = Application("QuickTime Player");
+      const theWindow = app.windows.whose({ id: windowId })[0];
+      const doc = theWindow.document();
+      return doc.currentTime();
+    }, this.windowId);
+  }
+
+  public async setRate(rate: number) {
+    run((windowId: number, rate: number) => {
+      const app = Application("QuickTime Player");
+      const theWindow = app.windows.whose({ id: windowId })[0];
+      const doc = theWindow.document();
+      doc.rate = rate;
+    }, this.windowId, rate);
+  }
+
   public async setCurrentTime(seconds: number) {
     run((windowId: number, seconds: number) => {
       const app = Application("QuickTime Player");
