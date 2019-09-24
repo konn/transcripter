@@ -11,12 +11,7 @@
 				"Other"
 		],
 		"activationEvents": [
-				"onLanguage:markdown",
-				"onCommand:mr-konn.transcripter.commands.togglePlay",
-				"onCommand:mr-konn.transcripter.commands.backwards",
-				"onCommand:mr-konn.transcripter.commands.forwards",
-				"onCommand:mr-konn.transcripter.commands.jump",
-				"onCommand:mr-konn.transcripter.commands.activate"
+				"*"
 		],
 		"main": "./out/extension.js",
 		"contributes": {
@@ -43,7 +38,7 @@
 				"commands": [
 						{
 								"command": "mr-konn.transcripter.commands.activate",
-								"title": "Transcripter: Start Transcription"
+								"title": "Transcripter: Activate Transcription"
 						},
 						{
 								"command": "mr-konn.transcripter.commands.backwards",
@@ -59,7 +54,7 @@
 						},
 						{
 								"command": "mr-konn.transcripter.commands.togglePlay",
-								"title": "Transcripter: Play/Stop Recording"
+								"title": "Transcripter: Toggle Play/Stop"
 						}
 				]
 		},

@@ -1,4 +1,3 @@
-// import { Application, QuickTimePlayer as qt } from "@jxa/types";
 import { run } from "@jxa/run";
 import QTConfig from "./qtconfig";
 import { Disposable } from "vscode";
@@ -36,7 +35,11 @@ export default class QTController implements Disposable {
       const app = Application("QuickTime Player");
       const theWindow = app.windows.whose({ id: windowId })[0];
       const doc: Document = theWindow.document();
+      const played = doc.playing();
       app.stepForward(doc, { by: fps * seconds });
+      if (played) {
+        app.play(doc);
+      }
     },
       this.windowId, this.fps, seconds
     );
@@ -47,7 +50,11 @@ export default class QTController implements Disposable {
       const app = Application("QuickTime Player");
       const theWindow = app.windows.whose({ id: windowId })[0];
       const doc: Document = theWindow.document();
+      const played = doc.playing();
       app.stepBackward(doc, { by: fps * seconds });
+      if (played) {
+        app.play(doc);
+      }
     },
       this.windowId, this.fps, seconds
     );
