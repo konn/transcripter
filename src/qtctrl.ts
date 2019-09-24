@@ -78,6 +78,27 @@ export default class QTController implements Disposable {
     }, this.windowId, rate);
   }
 
+  public async faster(rate = this.config.defaultRateStep) {
+    this.addToRate(rate);
+  }
+
+  public async slower(rate = this.config.defaultRateStep) {
+    this.addToRate(-rate);
+  }
+
+  public async addToRate(rate: number) {
+    run((windowId: number, rate: number) => {
+      const app = Application("QuickTime Player");
+      const theWindow = app.windows.whose({ id: windowId })[0];
+      const doc = theWindow.document();
+      doc.rate = doc.rate() + rate;
+    }, this.windowId, rate);
+  }
+
+  public async resetRate() {
+    this.setRate(this.config.defaultRate);
+  }
+
   public async setCurrentTime(seconds: number) {
     run((windowId: number, seconds: number) => {
       const app = Application("QuickTime Player");
@@ -88,7 +109,7 @@ export default class QTController implements Disposable {
   }
 
   public async openAudio() {
-    const { windowId, fps } = await run((path) => {
+    const { windowId, fps } = await run((path, rate) => {
       const app = Application("QuickTime Player");
       app.open(path);
       const theWindow = app.windows.whose({ "index": 1 })[0];
@@ -99,8 +120,9 @@ export default class QTController implements Disposable {
       app.stepForward(doc, { by: 1 });
       const fps = 1.0 / doc.currentTime();
       doc.currentTime = t0;
+      doc.rate = rate;
       return { fps, windowId };
-    }, this.path);
+    }, this.path, this.config.defaultRate);
     this.fps = fps;
     this.windowId = windowId;
   }

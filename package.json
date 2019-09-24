@@ -15,6 +15,32 @@
 		],
 		"main": "./out/extension.js",
 		"contributes": {
+        "keybindings": [
+          {
+            "command": "mr-konn.transcripter.commands.togglePlay",
+            "key": "Ctrl+x Space"
+          },
+          {
+            "command": "mr-konn.transcripter.commands.forwards",
+            "key": "ctrl+x right"
+          },
+          {
+            "command": "mr-konn.transcripter.commands.backwards",
+            "key": "ctrl+x left"
+          },
+          {
+            "command": "mr-konn.transcripter.commands.slower",
+            "key": "ctrl+x down"
+          },
+          {
+            "command": "mr-konn.transcripter.commands.faster",
+            "key": "ctrl+x up"
+          },
+          {
+            "command": "mr-konn.transcripter.commands.resetRate",
+            "key": "ctrl+x ctrl+0"
+          }
+        ],
 				"configuration": {
 						"title": "Transcripter",
 						"properties": {
@@ -27,7 +53,17 @@
 										"type": "number",
 										"default": 5,
 										"description": "A default seconds to rewind"
-								},
+                },
+                "mr-konn.transcripter.config.defaultRate": {
+										"type": "number",
+										"default": 1.05,
+										"description": "A default playing rate"
+                },
+                "mr-konn.transcripter.config.defaultRateStep": {
+										"type": "number",
+										"default": 0.05,
+										"description": "A default playing rate step"
+                },
 								"mr-konn.transcripter.config.defaultForwardSeconds": {
 										"type": "number",
 										"default": 5,
@@ -47,6 +83,18 @@
 						{
 								"command": "mr-konn.transcripter.commands.forwards",
 								"title": "Transcripter: Step Forwards"
+            },
+            {
+								"command": "mr-konn.transcripter.commands.faster",
+								"title": "Transcripter: Faster Rate"
+            },
+            {
+								"command": "mr-konn.transcripter.commands.slower",
+								"title": "Transcripter: Slower Rate"
+            },
+            {
+								"command": "mr-konn.transcripter.commands.resetRate",
+								"title": "Transcripter: Reset Rate"
 						},
 						{
 								"command": "mr-konn.transcripter.commands.jump",

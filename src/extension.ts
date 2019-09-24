@@ -83,6 +83,33 @@ export function activate(context: vscode.ExtensionContext) {
             )
           );
           context.subscriptions.push(
+            vscode.commands.registerCommand(
+              "mr-konn.transcripter.commands.faster",
+              async () => {
+                ctrl.faster();
+              },
+              ctrl
+            )
+          );
+          context.subscriptions.push(
+            vscode.commands.registerCommand(
+              "mr-konn.transcripter.commands.slower",
+              async () => {
+                ctrl.slower();
+              },
+              ctrl
+            )
+          );
+          context.subscriptions.push(
+            vscode.commands.registerCommand(
+              "mr-konn.transcripter.commands.resetRate",
+              async () => {
+                ctrl.resetRate();
+              },
+              ctrl
+            )
+          );
+          context.subscriptions.push(
             vscode.commands.registerTextEditorCommand(
               "mr-konn.transcripter.commands.insertTimeStamp",
               async (editor) => {
