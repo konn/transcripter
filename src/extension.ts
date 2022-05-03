@@ -30,38 +30,76 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (editor && path && path[0] && config) {
           const doc = editor.document;
+          const disps: vscode.Disposable[] = [];
           console.log('Congratulations, your extension "transcripter" is now active!');
 
           const ctrl = new QTController(path[0].path, config);
           const hndler = new TimeStampHandler(ctrl);
-          context.subscriptions.push(hndler);
+          disps.push(hndler);
           vscode.window.registerUriHandler(hndler);
           vscode.languages.registerDocumentLinkProvider(
             doc.uri,
             new TimeStampLinker()
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.togglePlay",
               ctrl.togglePlay,
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.backwards",
               ctrl.backwardSeconds,
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.forwards",
               ctrl.forwardSeconds,
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
+            vscode.commands.registerCommand(
+              "mr-konn.transcripter.commands.forwardsBy",
+              async () => {
+                const playing = await ctrl.playing();
+                await ctrl.forceStop();
+                const secs = await vscode.window.showInputBox({
+                  placeHolder: "Seconds to forward",
+                  value: String(config.defaultForwardSeconds)
+                });
+                await ctrl.forwardSeconds(Number(secs));
+                if (playing) { ctrl.forcePlay(); }
+              },
+              ctrl
+            )
+          );
+          disps.push(
+            vscode.commands.registerCommand(
+              "mr-konn.transcripter.commands.backwardsBy",
+              async () => {
+                const playing = await ctrl.playing();
+                try {
+                  await ctrl.forceStop();
+                  const secs = await vscode.window.showInputBox({
+                    placeHolder: "Seconds to Rewind",
+                    value: String(config.defaultForwardSeconds)
+                  });
+                  if (secs) {
+                    await ctrl.backwardSeconds(parseTimeToSeconds(secs));
+                  }
+                } finally {
+                  if (playing) { await ctrl.forcePlay(); }
+                }
+              },
+              ctrl
+            )
+          );
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.jump",
               async () => {
@@ -82,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.faster",
               async () => {
@@ -91,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.slower",
               async () => {
@@ -100,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerCommand(
               "mr-konn.transcripter.commands.resetRate",
               async () => {
@@ -109,7 +147,7 @@ export function activate(context: vscode.ExtensionContext) {
               ctrl
             )
           );
-          context.subscriptions.push(
+          disps.push(
             vscode.commands.registerTextEditorCommand(
               "mr-konn.transcripter.commands.insertTimeStamp",
               async (editor) => {
@@ -121,6 +159,9 @@ export function activate(context: vscode.ExtensionContext) {
               ctrl
             )
           );
+          for (const d of disps) {
+            context.subscriptions.push(d);
+          }
         }
       }
     )
@@ -128,4 +169,5 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+}
